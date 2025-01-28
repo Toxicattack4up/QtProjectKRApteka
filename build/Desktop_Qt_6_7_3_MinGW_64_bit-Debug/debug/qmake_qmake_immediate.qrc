@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+<file alias="users.json">F:/Project-QT/Study GUAP/Apteka/KR/users.json</file>
+</qresource>
+</RCC>

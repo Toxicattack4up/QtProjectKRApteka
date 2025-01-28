@@ -39,3 +39,9 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += users.json \
+    build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/users.json
+
+win32:CONFIG(release, debug|release): \
+    QMAKE_POST_LINK += copy /Y $$PWD/users.json $$OUT_PWD/
