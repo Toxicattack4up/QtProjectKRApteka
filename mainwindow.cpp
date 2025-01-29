@@ -2,7 +2,7 @@
 #include "addemployeedialog.h"
 #include "ui_mainwindow.h"
 #include "addemployeedialog.h"
-#include "RemoveEmployeeDialog.h"
+#include "RemoveEemployeeDialog.h"
 
 #include <QMessageBox>
 #include <QFile>
@@ -39,8 +39,7 @@ MainWindow::~MainWindow()
 
 
 
-// === Вспомогательные функции ===
-
+// === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
 
 // Загрузка JSON
 QJsonObject MainWindow::loadUsers(const QString &filePath)
@@ -68,14 +67,12 @@ QJsonObject MainWindow::loadUsers(const QString &filePath)
     return doc.object();
 }
 
-
 // Хеширование пароля
 QString MainWindow::hashPassword(const QString &password)
 {
     QByteArray hashed = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
     return QString(hashed.toHex());
 }
-
 
 // Проверка логина и пароля администратора
 bool MainWindow::validateAdmin(const QString &login, const QString &password, const QJsonObject &users)
@@ -100,7 +97,7 @@ bool MainWindow::validateAdmin(const QString &login, const QString &password, co
     return false;
 }
 
-
+// Сохранение данных о новом сотруднике
 void MainWindow::saveEmployeeToJson(const QString &name, const QString &position, const QString &salary, const QString &login, const QString &password)
 {
     QString filePath = QCoreApplication::applicationDirPath() + "/employees.json";
@@ -155,7 +152,6 @@ void MainWindow::saveEmployeeToJson(const QString &name, const QString &position
 
     QMessageBox::information(this, "Успех", "Сотрудник успешно добавлен!");
 }
-
 
 // Метод обновления таблицы сотрудников
 void MainWindow::UpdateEmployeeTable()
@@ -215,10 +211,11 @@ void MainWindow::UpdateEmployeeTable()
     }
 }
 
-// === Обработчики кнопок администратора ===
 
 
-// Кнопка Вход администратора
+// === ОБРАБОТКА КНОПОК АДМИНИСТРАТОРА ===
+
+// Кнопка "Вход" администратора
 void MainWindow::on_LogAdminPushButton_clicked()
 {
     QString login = ui->LoginLineEdit->text(); // Получаем логин
@@ -239,7 +236,7 @@ void MainWindow::on_LogAdminPushButton_clicked()
 }
 
 
-// Кнопка выход из выбора администратора
+// Кнопка "Выход" из выбора администратора
 void MainWindow::on_BackButton_clicked()
 {
     ui->LoginLineEdit->clear();
@@ -256,26 +253,11 @@ void MainWindow::on_EmployeeManagement_clicked()
 }
 
 
-// Кнопка назад из "Управление сотрудниками"
+// Кнопка "Назад" из "Управление сотрудниками"
 void MainWindow::on_Cancel_Employee_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
 }
-
-
-// Кнопка "Управление складом"
-void MainWindow::on_WarehouseManagement_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(2);
-}
-
-
-// Кнопка назад из "Управление складом"
-void MainWindow::on_Cancel_Warehouse_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
 
 // Кнопка открытия окна для добавления данных о новом сотруднике
 void MainWindow::on_AddEmployeePushButton_clicked()
@@ -313,4 +295,23 @@ void MainWindow::on_RemoveEmployeePushButton_clicked()
 
     removeDialog.exec();
 }
+
+
+// === ОБРАБОТКА КНОПОК ДЛЯ УПРАВЛЕНИЯ СКЛАДОМ ===
+
+// Кнопка "Управление складом"
+void MainWindow::on_WarehouseManagement_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+}
+
+
+// Кнопка "Назад" из "Управление складом"
+void MainWindow::on_Cancel_Warehouse_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+
 
