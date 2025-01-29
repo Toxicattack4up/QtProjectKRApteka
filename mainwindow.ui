@@ -18,25 +18,12 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="handleloginPage1">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="2" column="1">
-           <widget class="QPushButton" name="LogSellerPushButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Войти как сотрудник</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="LoginLabel">
             <property name="text">
@@ -54,19 +41,6 @@
             </property>
             <property name="text">
              <string>Введите пароль:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="LogAdminPushButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Войти как администратор</string>
             </property>
            </widget>
           </item>
@@ -93,6 +67,19 @@
            <widget class="QLineEdit" name="PasswordLineEdit">
             <property name="echoMode">
              <enum>QLineEdit::EchoMode::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QPushButton" name="LogAdminPushButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Войти</string>
             </property>
            </widget>
           </item>
@@ -141,19 +128,8 @@
        <layout class="QGridLayout" name="gridLayout_6">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="3" column="0">
-           <widget class="QPushButton" name="ViewWareHousePushButton">
-            <property name="text">
-             <string>Поиск лекарства</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="RemoveMedizinePushButton">
-            <property name="text">
-             <string>Удалить лекарство</string>
-            </property>
-           </widget>
+          <item row="0" column="0">
+           <widget class="QTableWidget" name="tableWidget_2"/>
           </item>
           <item row="0" column="1">
            <widget class="QScrollBar" name="verticalScrollBar_2">
@@ -169,10 +145,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QTableWidget" name="tableWidget_2"/>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="RemoveMedizinePushButton">
+            <property name="text">
+             <string>Удалить лекарство</string>
+            </property>
+           </widget>
           </item>
-          <item row="4" column="0">
+          <item row="3" column="0">
            <widget class="QPushButton" name="Cancel_Warehouse">
             <property name="text">
              <string>Назад</string>
@@ -348,7 +328,6 @@
   <tabstop>LoginLineEdit</tabstop>
   <tabstop>PasswordLineEdit</tabstop>
   <tabstop>LogAdminPushButton</tabstop>
-  <tabstop>LogSellerPushButton</tabstop>
   <tabstop>EmployeeManagement</tabstop>
   <tabstop>WarehouseManagement</tabstop>
   <tabstop>BackButton</tabstop>
@@ -360,7 +339,6 @@
   <tabstop>tableWidget</tabstop>
   <tabstop>AddMedicinePushButton</tabstop>
   <tabstop>RemoveMedizinePushButton</tabstop>
-  <tabstop>ViewWareHousePushButton</tabstop>
   <tabstop>Cancel_Warehouse</tabstop>
   <tabstop>tableWidget_2</tabstop>
  </tabstops>

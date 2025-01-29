@@ -28,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Подключаем кнопки к слотам
     connect(ui->LogAdminPushButton, &QPushButton::clicked, this, &MainWindow::on_LogAdminPushButton_clicked);
-    connect(ui->LogSellerPushButton, &QPushButton::clicked, this, &::MainWindow::on_LogAdminPushButton_clicked);
 
     connect(ui->BackButton, &QPushButton::clicked, this, &MainWindow::on_BackButton_clicked);
 
@@ -84,63 +83,74 @@ QString MainWindow::hashPassword(const QString &password)
     return QString(hashed.toHex());
 }
 
-// Проверка логина и пароля администратора
-bool MainWindow::validateAdmin(const QString &login, const QString &password, const QJsonObject &users)
+// Проверка логина и пароля сотрудника
+bool MainWindow::ValidateUser(const QString &login, const QString &password, const QJsonObject &users)
 {
+    // Проверяем в списке администраторов
     QJsonArray adminsArray = users.value("admins").toArray();
-
     for (const QJsonValue &adminValue : adminsArray)
     {
         QJsonObject adminObject = adminValue.toObject();
-
-        QString storedLogin = adminObject.value("login").toString();
-        QString storedHash = adminObject.value("password").toString();
-
-        //qDebug() << "Сравниваем логин:" << storedLogin << "с" << login;
-        //qDebug() << "Сравниваем хешированный пароль:" << hashPassword(password) << "с" << storedHash;
-
-        if (storedLogin == login && hashPassword(password) == storedHash)
+        if (adminObject["login"].toString() == login &&
+            adminObject["password"].toString() == hashPassword(password))
         {
             return true;
         }
     }
-    return false;
+
+    // Проверяем в списке сотрудников
+    QJsonArray employeesArray = users.value("employees").toArray();
+    for (const QJsonValue &employeeValue : employeesArray)
+    {
+        QJsonObject employeeObject = employeeValue.toObject();
+        if (employeeObject["login"].toString() == login &&
+            employeeObject["password"].toString() == hashPassword(password))
+        {
+            return true; // Вход как сотрудник
+        }
+    }
+
+    return false; // Пользователь не найден
 }
 
 // Сохранение данных о новом сотруднике
 void MainWindow::saveEmployeeToJson(const QString &name, const QString &position, const QString &salary, const QString &login, const QString &password)
 {
-    QString filePath = QCoreApplication::applicationDirPath() + "/employees.json";
+    QString filePath = QCoreApplication::applicationDirPath() + "/users.json";
     QFile file(filePath);
 
-    // Создаем пустой массив для сотрудников, если файл еще не существует
+    QJsonObject rootObj;
     QJsonArray employeesArray;
 
-    // Проверяем, существует ли файл
+    // Загружаем существующий JSON, если файл есть
     if (file.exists())
     {
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл для чтения!");
-            return;
-        }
+            QByteArray fileData = file.readAll();
+            file.close();
 
-        QByteArray fileData = file.readAll();
-        file.close();
-
-        QJsonDocument doc = QJsonDocument::fromJson(fileData);
-        if (!doc.isNull() && doc.isObject())
-        {
-            QJsonObject rootObj = doc.object();
-            if (rootObj.contains("employees")) {
+            QJsonDocument doc = QJsonDocument::fromJson(fileData);
+            if (!doc.isNull() && doc.isObject())
+            {
+                rootObj = doc.object();
                 employeesArray = rootObj["employees"].toArray();
             }
         }
     }
 
-    // Хешируем пароль перед сохранением
-    QByteArray hashedPassword = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
-    QString hashedPasswordHex = QString(hashedPassword.toHex());
+    // Проверяем, существует ли логин
+    for (const QJsonValue &value : employeesArray)
+    {
+        if (value.toObject()["login"].toString() == login)
+        {
+            QMessageBox::warning(this, "Ошибка", "Пользователь с таким логином уже существует!");
+            return;
+        }
+    }
+
+    // Хешируем пароль
+    QString hashedPassword = hashPassword(password);
 
     // Создаем объект нового сотрудника
     QJsonObject newEmployee;
@@ -148,26 +158,21 @@ void MainWindow::saveEmployeeToJson(const QString &name, const QString &position
     newEmployee["position"] = position;
     newEmployee["salary"] = salary;
     newEmployee["login"] = login;
-    newEmployee["password"] = hashedPasswordHex;  // Сохраняем хешированный пароль
+    newEmployee["password"] = hashedPassword;
 
-    // Добавляем нового сотрудника в массив
+    // Добавляем нового сотрудника
     employeesArray.append(newEmployee);
 
-    // Записываем JSON обратно в файл
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл для записи!");
-        return;
-    }
-
-    // Создаем корневой объект, если его нет
-    QJsonObject rootObj;
+    // Обновляем JSON-объект
     rootObj["employees"] = employeesArray;
 
-    // Создаем документ с новым объектом и записываем его в файл
-    QJsonDocument newDoc(rootObj);
-    file.write(newDoc.toJson());
-    file.close();
+    // Записываем в файл
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QJsonDocument newDoc(rootObj);
+        file.write(newDoc.toJson());
+        file.close();
+    }
 
     QMessageBox::information(this, "Успех", "Сотрудник успешно добавлен!");
 }
@@ -175,7 +180,7 @@ void MainWindow::saveEmployeeToJson(const QString &name, const QString &position
 // Метод обновления таблицы сотрудников
 void MainWindow::UpdateEmployeeTable()
 {
-    QString filePath = QCoreApplication::applicationDirPath() + "/employees.json";
+    QString filePath = QCoreApplication::applicationDirPath() + "/users.json";
     QFile file(filePath);
 
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -203,7 +208,6 @@ void MainWindow::UpdateEmployeeTable()
     ui->tableWidget->clear();
     ui->tableWidget->setRowCount(0);
     ui->tableWidget->setColumnCount(4);
-    //ui->tableWidget->setHorizontalHeaderLabels({"Логин", "Имя", "Должность", "Зарплата"});
 
     // Заголовки колонок
     QStringList headers = {"Имя", "Должность", "Зарплата", "Логин"};
@@ -472,29 +476,34 @@ void MainWindow::UpdateDeleteMedicineTable(QTableWidget* tableWidget)
 
 
 
-// === ОБРАБОТКА КНОПОК АДМИНИСТРАТОРА ===
+// === ОБРАБОТКА КНОПОК СОТРУДНИКА ===
 
-// Кнопка "Вход" администратора
+// Кнопка "Вход"
 void MainWindow::on_LogAdminPushButton_clicked()
 {
-    QString login = ui->LoginLineEdit->text(); // Получаем логин
-    QString password = ui->PasswordLineEdit->text(); // Получаем пароль
+    QString login = ui->LoginLineEdit->text().trimmed(); // Получаем логин
+    QString password = ui->PasswordLineEdit->text().trimmed(); // Получаем пароль
 
-    // Загружаем файл
+    // Загружаем JSON-файл с пользователями
     QJsonObject users = loadUsers("users.json");
 
-    // Проверка логина и пароля
-    if(validateAdmin(login, password, users))
-    {
-        ui->stackedWidget->setCurrentIndex(1); // Перелистываем страницу
+    if (users.isEmpty()) {
+        ui->Operation->setText("Ошибка загрузки пользователей.");
+        return;
     }
-    else
-    {
-        ui->Operation->setText("Неверный логин или пароль");
+
+    // Проверка сотрудника
+    if (ValidateUser(login, password, users)) {
+        ui->stackedWidget->setCurrentIndex(1); // Переход на страницу пользователя
+        ui->Operation->setText("Вход выполнен: Сотрудник");
+        return;
     }
+
+    // Ошибка авторизации
+    ui->Operation->setText("Неверный логин или пароль");
 }
 
-// Кнопка "Выход" из выбора администратора
+// Кнопка "Выход" из выбора
 void MainWindow::on_BackButton_clicked()
 {
     ui->LoginLineEdit->clear();

@@ -1,8 +1,18 @@
 {
-    "admins": [
+    "employees": [
+        {
+            "login": "test123",
+            "name": "test",
+            "password": "ecd71870d1963316a97e3ac3408c9835ad8cf0f3c1bc703527c30265534f75ae",
+            "position": "test",
+            "salary": "100000"
+        },
         {
             "login": "admin",
-            "password": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+            "name": "Admin",
+            "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+            "position": "Admin",
+            "salary": "99999999999"
         }
     ]
 }

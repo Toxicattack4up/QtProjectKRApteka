@@ -73,7 +73,7 @@ private:
 
     // === РАБОТА ФАЙЛОВ С СОТРУДНИКАМИ ===
     // Проверка введенных данных
-    bool validateAdmin(const QString &login, const QString &password, const QJsonObject &users);
+    bool ValidateUser(const QString &login, const QString &password, const QJsonObject &users);
 
     // Сохранение данных о новом сотруднике
     void saveEmployeeToJson(const QString &name, const QString &position, const QString &salary, const QString &login, const QString &password);
