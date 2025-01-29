@@ -1,6 +1,7 @@
-#include "RemoveEmployeeDialog.h"
+#include "RemoveEemployeeDialog.h"
 #include "ui_RemoveEmployeeDialog.h"
 
+// Конструктор
 RemoveEmployee::RemoveEmployee(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::RemoveEmployee)
@@ -10,6 +11,7 @@ RemoveEmployee::RemoveEmployee(QWidget *parent)
     ui->RemoveLineEdit->setPlaceholderText("Выберите сотрудника");
 }
 
+// Деструктор
 RemoveEmployee::~RemoveEmployee()
 {
     delete ui;
@@ -43,6 +45,7 @@ void RemoveEmployee::LoadEmployees()
     }
 }
 
+// Добавление в ComboBox полученных логинов из файла
 void RemoveEmployee::on_comboBoxEmployees_currentIndexChanged(const QString &text)
 {
     ui->RemoveLineEdit->setText(text);

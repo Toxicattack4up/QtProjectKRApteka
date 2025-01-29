@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>Apteka</class>
+ <widget class="QMainWindow" name="Apteka">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -228,7 +228,10 @@
           <item row="3" column="0">
            <widget class="QLineEdit" name="SearcheEmployeeLineEdit">
             <property name="text">
-             <string>Введите имя, логин, должность или зарплату сотрудника для поиска...</string>
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string/>
             </property>
            </widget>
           </item>
@@ -242,24 +245,24 @@
   </widget>
  </widget>
  <tabstops>
-  <tabstop>tableWidget</tabstop>
+  <tabstop>LoginLineEdit</tabstop>
+  <tabstop>PasswordLineEdit</tabstop>
+  <tabstop>LogAdminPushButton</tabstop>
+  <tabstop>LogSellerPushButton</tabstop>
+  <tabstop>EmployeeManagement</tabstop>
+  <tabstop>WarehouseManagement</tabstop>
+  <tabstop>BackButton</tabstop>
   <tabstop>AddEmployeePushButton</tabstop>
   <tabstop>RemoveEmployeePushButton</tabstop>
   <tabstop>SearcheEmployeeLineEdit</tabstop>
   <tabstop>SearcheEmployeePushButton</tabstop>
   <tabstop>Cancel_Employee</tabstop>
-  <tabstop>PasswordLineEdit</tabstop>
-  <tabstop>LogAdminPushButton</tabstop>
-  <tabstop>EmployeeManagement</tabstop>
-  <tabstop>WarehouseManagement</tabstop>
-  <tabstop>BackButton</tabstop>
+  <tabstop>tableWidget</tabstop>
   <tabstop>AddMedicinePushButton</tabstop>
   <tabstop>RemoveMedizinePushButton</tabstop>
   <tabstop>ViewWareHousePushButton</tabstop>
   <tabstop>Cancel_Warehouse</tabstop>
   <tabstop>tableWidget_2</tabstop>
-  <tabstop>LoginLineEdit</tabstop>
-  <tabstop>LogSellerPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -23,12 +23,17 @@ public:
     QString getPassword() const;
 
 private slots:
+    // Кнопка "Отмена"
     void on_CancelAddEmployeePushButton_clicked();
+
+    // Кнопка "Сохранить"
     void on_SaveAddEmployeePushButton_clicked();
+
+signals:
+    void employeeAdded(const QString &name, const QString &position, const QString &salary, const QString &login, const QString &password);
 
 private:
     Ui::AddEmployeeDialog *ui;
-    void saveEmployeeToJson(const QString &name, const QString &position, const QString &salary, const QString &login, const QString &password);
 };
 
 #endif // ADDEMPLOYEEDIALOG_H

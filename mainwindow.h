@@ -14,7 +14,7 @@
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class MainWindow;
+class Apteka;
 }
 QT_END_NAMESPACE
 
@@ -29,29 +29,27 @@ public:
     ~MainWindow();
 
 private slots:
+    // ВХОД АДМИНА
     void on_LogAdminPushButton_clicked(); // Кнопка для обработки входа
     void on_BackButton_clicked(); // Кнопка выход из меню выбора
 
-
+    // УПРАВЛЕНИЕ СОТРУДНИКАМИ
     void on_EmployeeManagement_clicked(); // Кнопка входа "Управление сотрудниками"
     void on_Cancel_Employee_clicked(); // Кнопка выхода из "Управления сотрудниками"
 
+    // МАНИПУЛЯЦИИ НАД СОТРУДНИКАМИ
+    void on_AddEmployeePushButton_clicked(); // Кнопка открытия окна "Добавить сотрудник"
+    void on_RemoveEmployeePushButton_clicked(); // Кнопка открытия окна "Удаление сотрудника"
+    void on_SearcheEmployeePushButton_clicked(); // Кнопка поиска сотрудника
 
+    // УПРАВЛЕНИЕ СКЛАДОМ
     void on_WarehouseManagement_clicked(); // Кнопка "Управление складом"
     void on_Cancel_Warehouse_clicked(); // Кнопка выхода из "Управления складом"
 
 
-    void on_AddEmployeePushButton_clicked(); // Кнопка открытия окна "Добавить сотрудник"
-
-
-
-
-
-
-    void on_RemoveEmployeePushButton_clicked();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::Apteka *ui;
 
     // Загрузка JSON файла Администраторов
     QJsonObject loadUsers(const QString &filePath);
@@ -67,8 +65,6 @@ private:
 
     //Метод обновления таблицы сотрудников
     void UpdateEmployeeTable();
-
-
 };
 
 #endif // MAINWINDOW_H
