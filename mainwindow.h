@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStackedWidget> // Для работы с QStackedWidget
+#include <QTableWidget>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -48,6 +49,18 @@ private slots:
 
 
 
+    void on_AddMedicinePushButton_clicked();
+
+    void on_CancelPushButton_clicked();
+
+    void on_DeleteMedicinePushButton_clicked();
+
+    void on_SaveAddMedicinePushButton_clicked();
+
+    void on_RemoveMedizinePushButton_clicked();
+
+    void on_CancelDeleteMedicinePushButton_clicked();
+
 private:
     Ui::Apteka *ui;
 
@@ -57,6 +70,8 @@ private:
     // Хеширование пароля
     QString hashPassword(const QString &password);
 
+
+    // === РАБОТА ФАЙЛОВ С СОТРУДНИКАМИ ===
     // Проверка введенных данных
     bool validateAdmin(const QString &login, const QString &password, const QJsonObject &users);
 
@@ -65,6 +80,22 @@ private:
 
     //Метод обновления таблицы сотрудников
     void UpdateEmployeeTable();
+    // ====================================
+
+
+    // === РАБОТА ФАЙЛОВ С ЛЕКАРСТВАМИ ===
+    // Метод для сохранения данных о лекарстве в JSON
+    void SaveMedicineToJson(const QString &name, const QString &country, bool requiresPrescription, int quantity);
+
+    // Метод для обновления таблицы с лекарствами
+    void UpdateMedicineTable();
+
+    // Метод удаления лекарство из файла
+    bool DeleteMedicineFromJson(const QString &name);
+
+    // Метод обновления таблицы с лекарствами при удалении
+    void UpdateDeleteMedicineTable(QTableWidget* tableWidget);
+    // ====================================
 };
 
 #endif // MAINWINDOW_H

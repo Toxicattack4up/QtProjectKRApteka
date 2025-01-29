@@ -11,30 +11,17 @@ CONFIG += c++17
 SOURCES += \
     RemoveEemployeeDialog.cpp \
     addemployeedialog.cpp \
-    admin.cpp \
-    loginform.cpp \
     main.cpp \
-    mainwindow.cpp \
-    user.cpp \
-    warehouse.cpp
+    mainwindow.cpp
 
 HEADERS += \
     RemoveEemployeeDialog.h \
     addemployeedialog.h \
-    admin.h \
-    loginform.h \
-    mainwindow.h \
-    user.h \
-    warehouse.h
+    mainwindow.h
 
 FORMS += \
     AddMedicineDialog.ui \
-    AdminForm.ui \
-    LoginForm.ui \
     RemoveEemployeeDialog.ui \
-    SalesHistoryForm.ui \
-    SellerForm.ui \
-    WarehouseForm.ui \
     addemployeedialog.ui \
     mainwindow.ui
 
@@ -45,6 +32,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += users.json \
     build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/employees.json \
+    build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/medicines.json \
     build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/debug/users.json
 
 win32:CONFIG(release, debug|release): \

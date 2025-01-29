@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>260</height>
+    <width>670</width>
+    <height>454</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="handleloginPage1">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -236,6 +236,106 @@
            </widget>
           </item>
          </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="AddMedicine">
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="3" column="0">
+         <widget class="QLabel" name="RecipeLabel">
+          <property name="text">
+           <string>Нужен рецепт?</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QPushButton" name="CancelPushButton">
+          <property name="text">
+           <string>Отмена</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="QuantitySpinBox"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="NameMedicineLabel">
+          <property name="text">
+           <string>Название лекарства</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1" colspan="2">
+         <widget class="QPushButton" name="SaveAddMedicinePushButton">
+          <property name="text">
+           <string>Сохранить</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="QuantityLabel">
+          <property name="text">
+           <string>Количество</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QLineEdit" name="CountryLineEdit"/>
+        </item>
+        <item row="0" column="1" rowspan="2" colspan="2">
+         <widget class="QLineEdit" name="NameMedicineLineEdit"/>
+        </item>
+        <item row="1" column="0" rowspan="2">
+         <widget class="QLabel" name="CountrtyLabel">
+          <property name="text">
+           <string>Страна производитель</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QRadioButton" name="RecipeRadioButtonYes">
+          <property name="text">
+           <string>Да</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QRadioButton" name="RecipeRadioButtonNo">
+          <property name="text">
+           <string>Нет</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="DeleteMedicinePage">
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="2" column="1">
+         <widget class="QPushButton" name="DeleteMedicinePushButton">
+          <property name="text">
+           <string>Удалить</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QScrollBar" name="verticalScrollBar_3">
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="CancelDeleteMedicinePushButton">
+          <property name="text">
+           <string>Назад</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QTableWidget" name="DeleteMedicineTableWidget"/>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QLineEdit" name="DeleteMedicineLineEdit"/>
         </item>
        </layout>
       </widget>

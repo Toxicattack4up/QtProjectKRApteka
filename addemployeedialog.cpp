@@ -66,6 +66,6 @@ void AddEmployeeDialog::on_SaveAddEmployeePushButton_clicked()
 void AddEmployeeDialog::on_CancelAddEmployeePushButton_clicked()
 {
     //qDebug() << "Кнопка отмены нажата";
-    close();  // Закрыть окно без сохранения
+    close();
 
 }

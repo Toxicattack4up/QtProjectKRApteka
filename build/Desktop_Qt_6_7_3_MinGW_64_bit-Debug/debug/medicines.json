@@ -1,0 +1,10 @@
+{
+    "medicines": [
+        {
+            "country": "Китай",
+            "name": "Жижа",
+            "quantity": 10,
+            "requiresPrescription": false
+        }
+    ]
+}

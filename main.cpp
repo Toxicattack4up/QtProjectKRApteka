@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "loginform.h"
 
 #include <QApplication>
 

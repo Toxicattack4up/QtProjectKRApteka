@@ -5,6 +5,7 @@
 #include "RemoveEemployeeDialog.h"
 
 #include <QMessageBox>
+#include <QDialog>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -20,16 +21,25 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->stackedWidget->setCurrentIndex(0);
+
     ui->SearcheEmployeeLineEdit->setPlaceholderText("Введите имя, логин, должность или зарплату сотрудника для поиска...");
+    ui->DeleteMedicineLineEdit->setPlaceholderText("Введите название лекарства для удаления...");
 
     // Подключаем кнопки к слотам
     connect(ui->LogAdminPushButton, &QPushButton::clicked, this, &MainWindow::on_LogAdminPushButton_clicked);
     connect(ui->LogSellerPushButton, &QPushButton::clicked, this, &::MainWindow::on_LogAdminPushButton_clicked);
+
     connect(ui->BackButton, &QPushButton::clicked, this, &MainWindow::on_BackButton_clicked);
+
     connect(ui->EmployeeManagement, &QPushButton::clicked, this, &MainWindow::on_EmployeeManagement_clicked);
-    connect(ui->WarehouseManagement, &QPushButton::clicked, this, &MainWindow::on_WarehouseManagement_clicked);
     connect(ui->Cancel_Employee, &QPushButton::clicked, this, &MainWindow::on_Cancel_Employee_clicked);
 
+    connect(ui->WarehouseManagement, &QPushButton::clicked, this, &MainWindow::on_WarehouseManagement_clicked);
+    connect(ui->AddMedicinePushButton, &QPushButton::clicked, this, &MainWindow::on_AddMedicinePushButton_clicked);
+    connect(ui->CancelPushButton, &QPushButton::clicked, this, &MainWindow::on_CancelPushButton_clicked);
+
+    connect(ui->RemoveMedizinePushButton, &QPushButton::clicked, this, &MainWindow::on_RemoveMedizinePushButton_clicked);
 }
 
 // Деструктор
@@ -37,8 +47,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-
 
 
 // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
@@ -69,18 +77,12 @@ QJsonObject MainWindow::loadUsers(const QString &filePath)
     return doc.object();
 }
 
-
-
-
 // Хеширование пароля
 QString MainWindow::hashPassword(const QString &password)
 {
     QByteArray hashed = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
     return QString(hashed.toHex());
 }
-
-
-
 
 // Проверка логина и пароля администратора
 bool MainWindow::validateAdmin(const QString &login, const QString &password, const QJsonObject &users)
@@ -104,9 +106,6 @@ bool MainWindow::validateAdmin(const QString &login, const QString &password, co
     }
     return false;
 }
-
-
-
 
 // Сохранение данных о новом сотруднике
 void MainWindow::saveEmployeeToJson(const QString &name, const QString &position, const QString &salary, const QString &login, const QString &password)
@@ -173,9 +172,6 @@ void MainWindow::saveEmployeeToJson(const QString &name, const QString &position
     QMessageBox::information(this, "Успех", "Сотрудник успешно добавлен!");
 }
 
-
-
-
 // Метод обновления таблицы сотрудников
 void MainWindow::UpdateEmployeeTable()
 {
@@ -235,6 +231,244 @@ void MainWindow::UpdateEmployeeTable()
 }
 
 
+// === ДОБАВЛЕНИЕ ЛЕКАРСТВА В ФАЙЛЫ ===
+
+// Метод сохранения файлов в JSON
+void MainWindow::SaveMedicineToJson(const QString &name, const QString &country, bool requiresPrescription, int quantity)
+{
+    QString filePath = QCoreApplication::applicationDirPath() + "/medicines.json";
+    QFile file(filePath);
+
+    // Создаем пустой массив для лекарств, если файл еще не существует
+    QJsonArray medicinesArray;
+
+    // Проверяем, существует ли файл
+    if (file.exists())
+    {
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл для чтения!");
+            return;
+        }
+
+        QByteArray fileData = file.readAll();
+        file.close();
+
+        QJsonDocument doc = QJsonDocument::fromJson(fileData);
+        if (!doc.isNull() && doc.isObject())
+        {
+            QJsonObject rootObj = doc.object();
+            if (rootObj.contains("medicines")) {
+                medicinesArray = rootObj["medicines"].toArray();
+            }
+        }
+    }
+
+    // Создаем объект нового лекарства
+    QJsonObject newMedicine;
+    newMedicine["name"] = name;
+    newMedicine["country"] = country;
+    newMedicine["requiresPrescription"] = requiresPrescription;
+    newMedicine["quantity"] = quantity;
+
+    // Добавляем новое лекарство в массив
+    medicinesArray.append(newMedicine);
+
+    // Записываем JSON обратно в файл
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл для записи!");
+        return;
+    }
+
+    // Создаем корневой объект, если его нет
+    QJsonObject rootObj;
+    rootObj["medicines"] = medicinesArray;
+
+    // Создаем документ с новым объектом и записываем его в файл
+    QJsonDocument newDoc(rootObj);
+    file.write(newDoc.toJson());
+    file.close();
+
+    QMessageBox::information(this, "Успех", "Лекарство успешно добавлено!");
+}
+
+// Метод обновления файла JSON
+void MainWindow::UpdateMedicineTable()
+{
+    QString filePath = QCoreApplication::applicationDirPath() + "/medicines.json";
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл с лекарствами!");
+        return;
+    }
+
+    QByteArray fileData = file.readAll();
+    file.close();
+
+    QJsonParseError jsonError;
+    QJsonDocument doc = QJsonDocument::fromJson(fileData, &jsonError);
+
+    if (doc.isNull() || jsonError.error != QJsonParseError::NoError)
+    {
+        QMessageBox::warning(this, "Ошибка", "Ошибка парсинга JSON: " + jsonError.errorString());
+        return;
+    }
+
+    QJsonObject rootObject = doc.object();
+    QJsonArray medicineArray = rootObject.value("medicines").toArray();
+
+    // Очистка таблицы перед обновлением
+    ui->tableWidget->clear();
+    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnCount(4);
+
+    // Заголовки колонок
+    QStringList headers = {"Название", "Страна", "Рецепт", "Количество"};
+    ui->tableWidget->setHorizontalHeaderLabels(headers);
+
+    // Заполнение таблицы
+    int row = 0;
+    for (const QJsonValue &value : medicineArray)
+    {
+        QJsonObject medicine = value.toObject();
+
+        QString name = medicine.value("name").toString();
+        QString country = medicine.value("country").toString();
+        bool requiresPrescription = medicine.value("requiresPrescription").toBool();
+        int quantity = medicine.value("quantity").toInt();
+
+        ui->tableWidget->insertRow(row);
+        ui->tableWidget->setItem(row, 0, new QTableWidgetItem(name));
+        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(country));
+        ui->tableWidget->setItem(row, 2, new QTableWidgetItem(requiresPrescription ? "Да" : "Нет"));
+        ui->tableWidget->setItem(row, 3, new QTableWidgetItem(QString::number(quantity)));
+
+        row++;
+    }
+}
+
+// Функцию для удаления лекарства
+bool MainWindow::DeleteMedicineFromJson(const QString &name)
+{
+    QString trimmedName = name.trimmed();
+    if (trimmedName.isEmpty()) {
+        QMessageBox::warning(this, "Ошибка", "Введите название лекарства для удаления!");
+        return false;
+    }
+
+    QString filePath = QCoreApplication::applicationDirPath() + "/medicines.json";
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл с лекарствами!");
+        return false;
+    }
+
+    QByteArray fileData = file.readAll();
+    file.close();
+
+    QJsonParseError jsonError;
+    QJsonDocument doc = QJsonDocument::fromJson(fileData, &jsonError);
+
+    if (doc.isNull() || jsonError.error != QJsonParseError::NoError) {
+        QMessageBox::warning(this, "Ошибка", "Ошибка парсинга JSON: " + jsonError.errorString());
+        return false;
+    }
+
+    QJsonObject rootObject = doc.object();
+    QJsonArray medicineArray = rootObject.value("medicines").toArray();
+    bool found = false;
+
+    // Создаем новый массив без удаляемого лекарства
+    QJsonArray newMedicineArray;
+    for (const QJsonValue &value : medicineArray) {
+        QJsonObject medicine = value.toObject();
+        if (medicine["name"].toString().compare(trimmedName, Qt::CaseInsensitive) != 0) {
+            newMedicineArray.append(medicine);
+        } else {
+            found = true;
+        }
+    }
+
+    if (!found) {
+        return false;  // Лекарство не найдено
+    }
+
+    // Перезаписываем файл с обновленным списком
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл для записи!");
+        return false;
+    }
+
+    rootObject["medicines"] = newMedicineArray;
+    QJsonDocument newDoc(rootObject);
+    file.write(newDoc.toJson());
+    file.close();
+
+    return true;
+
+}
+
+// Функция для обновления таблицы
+void MainWindow::UpdateDeleteMedicineTable(QTableWidget* tableWidget)
+{
+    QString filePath = QCoreApplication::applicationDirPath() + "/medicines.json";
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл с лекарствами!");
+        return;
+    }
+
+    QByteArray fileData = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(fileData);
+    QJsonObject rootObject = doc.object();
+    QJsonArray medicinesArray = rootObject.value("medicines").toArray();
+
+    // Очищаем таблицу перед обновлением
+    tableWidget->setRowCount(0);
+    tableWidget->clear();
+    tableWidget->setColumnCount(4);
+
+    // Устанавливаем заголовки столбцов
+    QStringList headers = {"Название", "Страна", "Рецепт", "Количество"};
+    tableWidget->setHorizontalHeaderLabels(headers);
+
+    if (medicinesArray.isEmpty())
+    {
+        QMessageBox::information(this, "Информация", "Список лекарств пуст!");
+        return;
+    }
+
+    // Заполняем таблицу актуальными данными
+    int row = 0;
+    for (const QJsonValue &value : medicinesArray)
+    {
+        QJsonObject medicine = value.toObject();
+
+        QString name = medicine.value("name").toString();
+        QString country = medicine.value("country").toString();
+        QString requiresPrescription = medicine.value("requiresPrescription").toBool() ? "Да" : "Нет";
+        int quantity = medicine.value("quantity").toInt();
+
+        tableWidget->insertRow(row);
+        tableWidget->setItem(row, 0, new QTableWidgetItem(name));
+        tableWidget->setItem(row, 1, new QTableWidgetItem(country));
+        tableWidget->setItem(row, 2, new QTableWidgetItem(requiresPrescription));
+        tableWidget->setItem(row, 3, new QTableWidgetItem(QString::number(quantity)));
+
+        row++;
+    }
+
+    // Автоматическое подстраивание ширины столбцов
+    tableWidget->resizeColumnsToContents();
+}
 
 
 
@@ -260,7 +494,6 @@ void MainWindow::on_LogAdminPushButton_clicked()
     }
 }
 
-
 // Кнопка "Выход" из выбора администратора
 void MainWindow::on_BackButton_clicked()
 {
@@ -269,7 +502,6 @@ void MainWindow::on_BackButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);  // Переключаем на страницу входа (индекс 0)
 }
 
-
 // Кнопка "Управление сотрудниками"
 void MainWindow::on_EmployeeManagement_clicked()
 {
@@ -277,13 +509,11 @@ void MainWindow::on_EmployeeManagement_clicked()
     UpdateEmployeeTable();
 }
 
-
 // Кнопка "Назад" из "Управление сотрудниками"
 void MainWindow::on_Cancel_Employee_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
 }
-
 
 // Кнопка открытия окна для добавления данных о новом сотруднике
 void MainWindow::on_AddEmployeePushButton_clicked()
@@ -310,7 +540,6 @@ void MainWindow::on_AddEmployeePushButton_clicked()
     }
 }
 
-
 // Кнопка удаление сотрудника
 void MainWindow::on_RemoveEmployeePushButton_clicked()
 {
@@ -321,7 +550,6 @@ void MainWindow::on_RemoveEmployeePushButton_clicked()
 
     removeDialog.exec();
 }
-
 
 // Кнопка поиска сотрудника по имени, логину, зарплате или должности
 void MainWindow::on_SearcheEmployeePushButton_clicked()
@@ -388,8 +616,8 @@ void MainWindow::on_SearcheEmployeePushButton_clicked()
 void MainWindow::on_WarehouseManagement_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
+    UpdateDeleteMedicineTable(ui->tableWidget_2);
 }
-
 
 // Кнопка "Назад" из "Управление складом"
 void MainWindow::on_Cancel_Warehouse_clicked()
@@ -397,6 +625,85 @@ void MainWindow::on_Cancel_Warehouse_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
+// Кнопка перехода в меню "Добавить лекарство"
+void MainWindow::on_AddMedicinePushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(4);
 
+}
 
+// Кнопка "Отменить" для выхода из меню "Добавить лекарство"
+void MainWindow::on_CancelPushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+    UpdateDeleteMedicineTable(ui->tableWidget_2);
+}
+
+// Кнопка "Сохранить" для добавления лекартсва в файл JSON
+void MainWindow::on_SaveAddMedicinePushButton_clicked()
+{
+    QString name = ui->NameMedicineLineEdit->text();
+    QString country = ui->CountryLineEdit->text();
+    bool requiresPrescription = ui->RecipeRadioButtonYes->isChecked();
+    int quantity = ui->QuantitySpinBox->value();
+
+    // Проверка на пустые поля
+    if (name.isEmpty() || country.isEmpty()) {
+        QMessageBox::warning(this, "Ошибка", "Заполните все поля!");
+        return;
+    }
+
+    // Сохраняем новое лекарство в JSON
+    SaveMedicineToJson(name, country, requiresPrescription, quantity);
+
+    ui->NameMedicineLineEdit->clear();
+    ui->CountryLineEdit->clear();
+    ui->RecipeRadioButtonYes->setChecked(false);  // Снимаем выбор с радиокнопки
+    ui->RecipeRadioButtonNo->setChecked(false);   // Если есть другая радиокнопка, также сбрасываем
+    ui->QuantitySpinBox->setValue(0);
+
+    QMessageBox::information(this, "Успех", "Лекарство добавлено!");
+
+}
+
+// Кнопка "Удалить" в меню "Удалить лекарство"
+void MainWindow::on_DeleteMedicinePushButton_clicked()
+{
+    QString name = ui->DeleteMedicineLineEdit->text();
+
+    if (name.isEmpty()) {
+        QMessageBox::warning(this, "Ошибка", "Введите название лекарства для удаления!");
+        return;
+    }
+
+    // Передаем `name` в `DeleteMedicineFromJson()`
+    if (DeleteMedicineFromJson(name))
+    {
+        QMessageBox::information(this, "Успех", "Лекарство удалено!");
+
+        // Очищаем поле ввода
+        ui->DeleteMedicineLineEdit->clear();
+
+        // Обновляем таблицу
+        UpdateDeleteMedicineTable(ui->DeleteMedicineTableWidget);
+    }
+    else
+    {
+        QMessageBox::warning(this, "Ошибка", "Лекарство не найдено!");
+    }
+}
+
+// Кнопка "Удалить лекарство" для перехода к меню удаления
+void MainWindow::on_RemoveMedizinePushButton_clicked()
+{
+    UpdateDeleteMedicineTable(ui->DeleteMedicineTableWidget);
+    ui->stackedWidget->setCurrentIndex(5);
+}
+
+// Кнопка "Назад" из меню "Удалить лекарство"
+void MainWindow::on_CancelDeleteMedicinePushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+    UpdateDeleteMedicineTable(ui->tableWidget_2);
+}
 
