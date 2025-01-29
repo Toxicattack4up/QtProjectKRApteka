@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AddEmployeeDialog</class>
+ <widget class="QDialog" name="AddEmployeeDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="PasswordLineEditAddEmployee">
+     <property name="echoMode">
+      <enum>QLineEdit::EchoMode::Password</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="PasswordLabelAddEmployee">
+     <property name="text">
+      <string>Пароль:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="LoginLabelAddEmployee">
+     <property name="text">
+      <string>Логин:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="NameLineEditAddEmployee"/>
+   </item>
+   <item row="6" column="1">
+    <widget class="QPushButton" name="SaveAddEmployeePushButton">
+     <property name="text">
+      <string>Сохранить</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="LoginLineEditAddEmployee"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="NameLabelAddEmployee">
+     <property name="text">
+      <string>Введите имя сотрудника:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="SalaryLabelAddEmployee">
+     <property name="text">
+      <string>Зарплата сотрудника:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="PositionLabelAddEmployee">
+     <property name="text">
+      <string>Введите должность сотрудника:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="SalaryLineEditAddEmployee"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="PositionLineEditAddEmployee"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QPushButton" name="CancelAddEmployeePushButton">
+     <property name="text">
+      <string>Отмена</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QLabel" name="ErrorLabelAddEmployee">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>NameLineEditAddEmployee</tabstop>
+  <tabstop>PositionLineEditAddEmployee</tabstop>
+  <tabstop>SalaryLineEditAddEmployee</tabstop>
+  <tabstop>LoginLineEditAddEmployee</tabstop>
+  <tabstop>PasswordLineEditAddEmployee</tabstop>
+  <tabstop>SaveAddEmployeePushButton</tabstop>
+  <tabstop>CancelAddEmployeePushButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
