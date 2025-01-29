@@ -187,20 +187,13 @@
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="3" column="0">
-           <widget class="QPushButton" name="SearcheEmployeePushButton">
-            <property name="text">
-             <string>Поиск сотрудника</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QTableWidget" name="tableWidget"/>
           </item>
-          <item row="0" column="1">
-           <widget class="QScrollBar" name="verticalScrollBar">
-            <property name="orientation">
-             <enum>Qt::Orientation::Vertical</enum>
+          <item row="5" column="0">
+           <widget class="QPushButton" name="Cancel_Employee">
+            <property name="text">
+             <string>Назад</string>
             </property>
            </widget>
           </item>
@@ -211,6 +204,13 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="SearcheEmployeePushButton">
+            <property name="text">
+             <string>Поиск сотрудника</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0">
            <widget class="QPushButton" name="RemoveEmployeePushButton">
             <property name="text">
@@ -218,10 +218,17 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="Cancel_Employee">
+          <item row="0" column="1">
+           <widget class="QScrollBar" name="verticalScrollBar">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLineEdit" name="SearcheEmployeeLineEdit">
             <property name="text">
-             <string>Назад</string>
+             <string>Введите имя, логин, должность или зарплату сотрудника для поиска...</string>
             </property>
            </widget>
           </item>
@@ -235,14 +242,14 @@
   </widget>
  </widget>
  <tabstops>
-  <tabstop>LoginLineEdit</tabstop>
-  <tabstop>PasswordLineEdit</tabstop>
-  <tabstop>LogAdminPushButton</tabstop>
-  <tabstop>LogSellerPushButton</tabstop>
+  <tabstop>tableWidget</tabstop>
   <tabstop>AddEmployeePushButton</tabstop>
   <tabstop>RemoveEmployeePushButton</tabstop>
+  <tabstop>SearcheEmployeeLineEdit</tabstop>
   <tabstop>SearcheEmployeePushButton</tabstop>
   <tabstop>Cancel_Employee</tabstop>
+  <tabstop>PasswordLineEdit</tabstop>
+  <tabstop>LogAdminPushButton</tabstop>
   <tabstop>EmployeeManagement</tabstop>
   <tabstop>WarehouseManagement</tabstop>
   <tabstop>BackButton</tabstop>
@@ -251,7 +258,8 @@
   <tabstop>ViewWareHousePushButton</tabstop>
   <tabstop>Cancel_Warehouse</tabstop>
   <tabstop>tableWidget_2</tabstop>
-  <tabstop>tableWidget</tabstop>
+  <tabstop>LoginLineEdit</tabstop>
+  <tabstop>LogSellerPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

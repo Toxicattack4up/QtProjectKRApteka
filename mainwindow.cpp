@@ -2,6 +2,7 @@
 #include "addemployeedialog.h"
 #include "ui_mainwindow.h"
 #include "addemployeedialog.h"
+#include "RemoveEmployeeDialog.h"
 
 #include <QMessageBox>
 #include <QFile>
@@ -37,7 +38,9 @@ MainWindow::~MainWindow()
 
 
 
+
 // === Вспомогательные функции ===
+
 
 // Загрузка JSON
 QJsonObject MainWindow::loadUsers(const QString &filePath)
@@ -65,12 +68,14 @@ QJsonObject MainWindow::loadUsers(const QString &filePath)
     return doc.object();
 }
 
+
 // Хеширование пароля
 QString MainWindow::hashPassword(const QString &password)
 {
     QByteArray hashed = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
     return QString(hashed.toHex());
 }
+
 
 // Проверка логина и пароля администратора
 bool MainWindow::validateAdmin(const QString &login, const QString &password, const QJsonObject &users)
@@ -92,21 +97,22 @@ bool MainWindow::validateAdmin(const QString &login, const QString &password, co
             return true;
         }
     }
-
     return false;
 }
 
 
 void MainWindow::saveEmployeeToJson(const QString &name, const QString &position, const QString &salary, const QString &login, const QString &password)
 {
-    QString filePath = "employees.json";
+    QString filePath = QCoreApplication::applicationDirPath() + "/employees.json";
     QFile file(filePath);
 
     QJsonArray employeesArray;
 
     // Проверяем, существует ли файл
-    if (file.exists()) {
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if (file.exists())
+    {
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
             QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл для чтения!");
             return;
         }
@@ -115,7 +121,8 @@ void MainWindow::saveEmployeeToJson(const QString &name, const QString &position
         file.close();
 
         QJsonDocument doc = QJsonDocument::fromJson(fileData);
-        if (!doc.isNull() && doc.isArray()) {
+        if (!doc.isNull() && doc.isArray())
+        {
             employeesArray = doc.array();
         }
     }
@@ -136,7 +143,8 @@ void MainWindow::saveEmployeeToJson(const QString &name, const QString &position
     employeesArray.append(newEmployee);
 
     // Записываем JSON обратно в файл
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
         QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл для записи!");
         return;
     }
@@ -149,6 +157,7 @@ void MainWindow::saveEmployeeToJson(const QString &name, const QString &position
 }
 
 
+// Метод обновления таблицы сотрудников
 void MainWindow::UpdateEmployeeTable()
 {
     QString filePath = QCoreApplication::applicationDirPath() + "/employees.json";
@@ -166,7 +175,8 @@ void MainWindow::UpdateEmployeeTable()
     QJsonParseError jsonError;
     QJsonDocument doc = QJsonDocument::fromJson(fileData, &jsonError);
 
-    if (doc.isNull() || jsonError.error != QJsonParseError::NoError) {
+    if (doc.isNull() || jsonError.error != QJsonParseError::NoError)
+    {
         QMessageBox::warning(this, "Ошибка", "Ошибка парсинга JSON: " + jsonError.errorString());
         return;
     }
@@ -179,6 +189,7 @@ void MainWindow::UpdateEmployeeTable()
     ui->tableWidget->setRowCount(0);
     ui->tableWidget->setColumnCount(4);
     ui->tableWidget->setHorizontalHeaderLabels({"Логин", "Имя", "Должность", "Зарплата"});
+
     // Заголовки колонок
     QStringList headers = {"Имя", "Должность", "Зарплата", "Логин"};
     ui->tableWidget->setHorizontalHeaderLabels(headers);
@@ -206,6 +217,7 @@ void MainWindow::UpdateEmployeeTable()
 
 // === Обработчики кнопок администратора ===
 
+
 // Кнопка Вход администратора
 void MainWindow::on_LogAdminPushButton_clicked()
 {
@@ -226,6 +238,7 @@ void MainWindow::on_LogAdminPushButton_clicked()
     }
 }
 
+
 // Кнопка выход из выбора администратора
 void MainWindow::on_BackButton_clicked()
 {
@@ -234,6 +247,7 @@ void MainWindow::on_BackButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);  // Переключаем на страницу входа (индекс 0)
 }
 
+
 // Кнопка "Управление сотрудниками"
 void MainWindow::on_EmployeeManagement_clicked()
 {
@@ -241,11 +255,13 @@ void MainWindow::on_EmployeeManagement_clicked()
     UpdateEmployeeTable();
 }
 
+
 // Кнопка назад из "Управление сотрудниками"
 void MainWindow::on_Cancel_Employee_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
 }
+
 
 // Кнопка "Управление складом"
 void MainWindow::on_WarehouseManagement_clicked()
@@ -253,11 +269,13 @@ void MainWindow::on_WarehouseManagement_clicked()
     ui->stackedWidget->setCurrentIndex(2);
 }
 
+
 // Кнопка назад из "Управление складом"
 void MainWindow::on_Cancel_Warehouse_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
 }
+
 
 // Кнопка открытия окна для добавления данных о новом сотруднике
 void MainWindow::on_AddEmployeePushButton_clicked()
@@ -282,7 +300,17 @@ void MainWindow::on_AddEmployeePushButton_clicked()
             UpdateEmployeeTable();
         }
     }
-
 }
 
+
+// Кнопка удаление сотрудника
+void MainWindow::on_RemoveEmployeePushButton_clicked()
+{
+    RemoveEmployee removeDialog(this);
+
+    // Обновляем таблицу после удаления
+    connect(&removeDialog, &RemoveEmployee::EmployeeDeleted, this, &MainWindow::UpdateEmployeeTable);
+
+    removeDialog.exec();
+}
 

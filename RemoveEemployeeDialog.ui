@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RemoveEmployee</class>
+ <widget class="QDialog" name="RemoveEmployee">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <widget class="QPushButton" name="CancelInManagementPage3PushButton">
+     <property name="text">
+      <string>Отмена</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QPushButton" name="RemoveEmployeesPushButton">
+     <property name="text">
+      <string>Удалить</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="RemoveLabel">
+       <property name="text">
+        <string>Введите данные для удаления (ФИО или Логин)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="RemoveLineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QComboBox" name="comboBoxEmployees"/>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>RemoveLineEdit</tabstop>
+  <tabstop>RemoveEmployeesPushButton</tabstop>
+  <tabstop>CancelInManagementPage3PushButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
